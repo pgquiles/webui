@@ -2,6 +2,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href="style.css" type="text/css">
+<script type="text/javascript" src="jquery.js"></script>  
 <title></title>
 </head>
 <style>
@@ -263,9 +264,11 @@ function body_onload()
 </script>
 <body onLoad="body_onload()">
 <iframe name="action_zone" style="display:none"></iframe>
+
+
 <table width="160" class="h2 f12b">
-	<tr height="10"><td> </td></tr>
-	<tr><td colspan="2"><table width="160"><tr>
+	
+		<tr><td colspan="2"><table width="160"><tr>
 		<td>
 			<div><img src="images/ptz1.gif"><img src="images/up_up.gif" onMouseDown="up_onmousedown()" onMouseUp="up_onmouseup()"><img src="images/ptz2.gif"></div>
 			<div><img src="images/leftup_up.gif" onMouseDown="leftup_onmousedown()" onMouseUp= "leftup_onmouseup()"><img src="images/ptz3.gif"><img src="images/rightup_up.gif" onMouseDown= "rightup_onmousedown()" onMouseUp="rightup_onmouseup()"></div>
@@ -277,20 +280,50 @@ function body_onload()
 			<div><img id="hpatrol" src="images/hpatrol_up.gif" onClick="hpatrol_onclick()">&nbsp;<img id="hpatrolstop" src="images/stop_up.gif" onClick="hpatrolstop_onclick()"></div>
 			<div><img id="switchon" src="images/switchon_up.gif" onClick="decoder_control(IO_ON)">&nbsp;<img id="switchoff" src="images/switchoff_up.gif" onClick="decoder_control(IO_OFF)"></div>
 		</td>	
+		
 	</tr></table></td></tr>
-	<tr height="10"><td> </td></tr>
-	<tr height="20"><td colspan="2"><input id="image_reversal" type="checkbox" onClick="set_flip()"><script>document.write(top.str_reversal);</script>&nbsp;&nbsp;<input id="image_mirror" type="checkbox" onClick="set_flip()"><script>document.write(top.str_mirror);</script></td></tr>
-	<tr height="10"><td> </td></tr>
-	<tr height="20"><td width="65" class="h1">&nbsp;<script>document.write(top.str_resolution);</script></td><td><SELECT id="resolution_sel" class="s4" onChange="set_resolution()"><OPTION value="8">320*240</OPTION><OPTION value="32">640*480</OPTION></SELECT></td></tr>
-	<tr height="20"><td class="h1">&nbsp;<script>document.write(top.str_mode);</script></td><td><SELECT class="s4" id="mode_sel" onChange="camera_control(3,value)"><OPTION value="0">50 HZ</OPTION><OPTION value="1">60 HZ</OPTION><OPTION value="2"><script>document.write(top.str_outdoor);</script></OPTION></SELECT></td></tr>
-	<tr height="20"><td class="h1">&nbsp;<script>document.write(top.str_brightness);</script></td><td><table class="h2"><tr><td><img src="images/plus_up.gif" onClick="plus_brightness()"></td><td><input id="brightness_input" readonly maxLength="2" class="s3" size="2"></td><td><img src="images/minus_up.gif" onClick="minus_brightness()"></td></tr></table></td></tr>
-	<tr height="20"><td class="h1">&nbsp;<script>document.write(top.str_contrast);</script></td><td><table class="h2"><tr><td><img src="images/plus_up.gif" onClick="plus_contrast()"></td><td><input id="contrast_input" readonly maxLength="1" class="s3" size="2"></td><td><img src="images/minus_up.gif" onClick="minus_contrast()"></td></tr></table></td></tr>
-	<tr height="10"><td> </td></tr>
-    <tr>
-    <input onkeypress="javascript:return false;" id="txtChar" onkeydown="javascript:return displayKeyCode(event)" type="text" name="txtChar">&nbsp;&nbsp;&nbsp;<span id="spnCode" name="spnCode">KeyCode:  38</span>
-    </tr>
-</table>
+	
+	
+	
+	<tr height="5"><td> </td></tr>
+	<tr height="15"><td colspan="2"><input id="image_reversal" type="checkbox" onClick="set_flip()"><script>document.write(top.str_reversal);</script>&nbsp;&nbsp;<input id="image_mirror" type="checkbox" onClick="set_flip()"><script>document.write(top.str_mirror);</script></td></tr>
+	<tr height="5"><td> </td></tr>
+	<tr height="15"><td width="65" class="h1">&nbsp;<script>document.write(top.str_resolution);</script></td><td><SELECT id="resolution_sel" class="s4" onChange="set_resolution()"><OPTION value="8">320*240</OPTION><OPTION value="32">640*480</OPTION></SELECT></td></tr>
+	<tr height="15"><td class="h1">&nbsp;<script>document.write(top.str_mode);</script></td><td><SELECT class="s4" id="mode_sel" onChange="camera_control(3,value)"><OPTION value="0">50 HZ</OPTION><OPTION value="1">60 HZ</OPTION><OPTION value="2"><script>document.write(top.str_outdoor);</script></OPTION></SELECT></td></tr>
+	<tr height="15"><td class="h1">&nbsp;<script>document.write(top.str_brightness);</script></td><td><table class="h2"><tr><td><img src="images/plus_up.gif" onClick="plus_brightness()"></td><td><input id="brightness_input" readonly maxLength="2" class="s3" size="2"></td><td><img src="images/minus_up.gif" onClick="minus_brightness()"></td></tr></table></td></tr>
+	<tr height="15"><td class="h1">&nbsp;<script>document.write(top.str_contrast);</script></td><td><table class="h2"><tr><td><img src="images/plus_up.gif" onClick="plus_contrast()"></td><td><input id="contrast_input" readonly maxLength="1" class="s3" size="2"></td><td><img src="images/minus_up.gif" onClick="minus_contrast()"></td></tr></table></td></tr>
+	
+	
 
+	
+	
+	
+</table>
+<font size="-2">
+<textarea disabled id="content" rows="6" cols="23" style = "font-size: 10px" ></textarea>
+</font size>
+
+    <input onkeypress="javascript:return false;" id="txtChar" style="width:160px" onkeydown="javascript:return displayKeyCode(event)" type="text" name="txtChar">
+
+
+
+<script>  
+        function show()  
+        {  
+            $.ajax({  
+                url: "status.txt",  
+                cache: false,  
+                success: function(html){  
+                    $("#content").html(html);  
+                }  
+            });  
+        }  
+      
+        $(document).ready(function(){  
+            show();  
+            setInterval('show()',1000);  
+        });  
+</script>  
 
 <script language="Javascript">
 
