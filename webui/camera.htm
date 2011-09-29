@@ -310,16 +310,15 @@ function body_onload()
 <script>  
         function show()  
         {  
-            $.ajax({  
-                url: "status.txt",  
-                cache: false,  
-                success: function(html){  
-                    $("#content").html(html);  
-                }  
-            });  
-        }  
+            
+			jQuery.get('status.txt', function(data) {
+				var tempArray = data.split("");
+				var tempText = "Left Engine Dir.: " + tempArray[0] + "\r\nRight Engine Dir.: " + tempArray[1] + "\r\nLeft Engine Speed: " + tempArray[2] + "\r\nRight Engine Speed: " + tempArray[3] + "\r\nBattery Level: " + tempArray[4] + "\r\nDistance to object: " + tempArray[5] + tempArray[6] + "\r\nLast Command: " + tempArray[7];
+				document.getElementById('content').value = tempText;
+			});
+		}  
       
-        $(document).ready(function(){  
+		$(document).ready(function(){  
             show();  
             setInterval('show()',1000);  
         });  

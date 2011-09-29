@@ -1,7 +1,1 @@
-Left Engine Direction: F
-Right Engine Direction: F
-Left Engine Speed: 5 
-Right Engine Speed: 5
-Battery Level: Good
-Distance to object: 40
-Last Command: Stop
+ABCDEFGH
