@@ -1,0 +1,62 @@
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<title>jQuery File Upload Demo</title>
+<script type="text/javascript" src="jquery.js"></script>  
+</head>
+<body onLoad="body_onload()">
+<iframe name="action_zone" style="display:none"></iframe>
+<textarea disabled id="content" rows="6" cols="23" style = "font-size: 10px" ></textarea>
+<textarea disabled id="content1" rows="6" cols="23" style = "font-size: 10px" ></textarea>
+
+
+<input type="file" id="fileElem"  onchange="handleFiles(this.files)">
+<a href="#" id="fileSelect">Select some files</a>
+
+<input type="submit" value="Update" onClick="updateFirmware()" id="click">
+
+
+<script>  
+	var fileSelect = document.getElementById("fileSelect"),
+	fileElem = document.getElementById("fileElem");
+	
+	function updateFirmware()  {  
+		//Show the size of firmware file
+		var reminder = fileElem.files[0].size%128;
+		if ( reminder != 0 ) {
+			var packets = ~~(fileElem.files[0].size/128) + 1;
+		}
+		else {
+			var packets = ~~(fileElem.files[0].size/128)
+		}
+		document.getElementById("content").value = fileElem.files[0].size + " bytes\r\n" + packets +" packets to be sent";
+	}
+	
+	function comm_write(data)	{
+		action_zone.location='comm_write.cgi?port=0&baud=4098&bytes=2&data='+data
+	}
+</script>  
+
+
+<script>  
+        
+		function show_status()  
+        {  
+            
+						
+			jQuery.get('update.log', function(data1) {
+				document.getElementById('content1').value = data1;
+			});
+			
+			
+		} 
+		
+		$(document).ready(function(){  
+            show_status();  
+            setInterval('show_status()',1000);  
+        }); 
+		
+</script>  
+
+</body>
+</html>
