@@ -7,29 +7,62 @@
 <body onLoad="body_onload()">
 <iframe name="action_zone" style="display:none"></iframe>
 <textarea disabled id="content" rows="6" cols="23" style = "font-size: 10px" ></textarea>
-<textarea disabled id="content1" rows="6" cols="23" style = "font-size: 10px" ></textarea>
+<textarea disabled id="avr_log" rows="6" cols="23" style = "font-size: 10px" ></textarea>
 
 
 <input type="file" id="fileElem"  onchange="handleFiles(this.files)">
 <a href="#" id="fileSelect">Select some files</a>
 
-<input type="submit" value="Update" onClick="updateFirmware()" id="click">
+<input type="submit" value="Update" onClick="update_firmware()" id="click">
 
 
 <script>  
 	var fileSelect = document.getElementById("fileSelect"),
 	fileElem = document.getElementById("fileElem");
+	var rest_of_bytes; //rest of the bytes after packets division
+	var packets; //quantity of packets to be sent
+	var avr_log_console;//avr_log_console
+	var packet4sending;//packet to be sent - consits of: 0 - "$" - start of header, 1 - Number of packet, 2 - Bytes to be sent, 128 or less bytes to be sent, 2 bytes for CRC
+	var packet_number = 1; //first packet
 	
-	function updateFirmware()  {  
+	function update_firmware()  {  
 		//Show the size of firmware file
-		var reminder = fileElem.files[0].size%128;
-		if ( reminder != 0 ) {
-			var packets = ~~(fileElem.files[0].size/128) + 1;
+		calculate_packets_quantity();
+		document.getElementById("content").value = fileElem.files[0].size + " bytes\r\n" + packets +" packets to be sent";
+		if ( avr_log_console == "ready to update") {
+			
 		}
 		else {
-			var packets = ~~(fileElem.files[0].size/128)
+			alert("AVR is not ready to be updated");
 		}
-		document.getElementById("content").value = fileElem.files[0].size + " bytes\r\n" + packets +" packets to be sent";
+	}
+	
+	function calculate_packets_quantity() {
+	    if (fileElem.files[0] != null) {
+			rest_of_bytes = fileElem.files[0].size%128;
+		    if ( rest_of_bytes != 0 ) {
+				packets = ~~(fileElem.files[0].size/128) + 1;
+		    }
+		    else {
+		    	packets = ~~(fileElem.files[0].size/128); 
+		    }
+	    }
+	    else {
+	    	alert("Firmware file is not chosen!");
+	    }
+	}
+	
+	
+	function get_packet_from_file(packet_number) {
+		
+		if ( packet_number != packets) {//not the last packet
+			packet4sending = "$" + packet_number + 128;
+		}
+		else {
+			//last packet, syze of packet depends of rest_of_bytes
+			packet4sending = "$" + packet_number + rest_of_bytes;
+		}
+		//calculate CRC		
 	}
 	
 	function comm_write(data)	{
@@ -44,8 +77,8 @@
         {  
             
 						
-			jQuery.get('update.log', function(data1) {
-				document.getElementById('content1').value = data1;
+			jQuery.get('update.log', function(avr_log_console) {
+				document.getElementById('avr_log').value = avr_log_console;
 			});
 			
 			
@@ -53,7 +86,7 @@
 		
 		$(document).ready(function(){  
             show_status();  
-            setInterval('show_status()',1000);  
+            setInterval('show_status()',10);  
         }); 
 		
 </script>  
