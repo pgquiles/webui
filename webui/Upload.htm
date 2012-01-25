@@ -118,7 +118,7 @@ function sendPacket() {
 	
 	
 	var packet4Sending;		//Packet for sending, consist of start indicator "$"
-							//Count number of packet, length of packet, bytes * PACKET_LENGTH
+							//Count number of packet, length of packet, 2 bytes CRC, bytes * PACKET_LENGTH
 	
 	if (attempts != MAX_ATTEMPTS) {
 		if (parseInt(avr_log_console) == packets) {
@@ -244,7 +244,7 @@ function complementToRequiredDigits (data, digits) {
  */
 function comm_write(data)	{
 	//Write data to AVR com port
-	action_zone.location='comm_write.cgi?port=0&baud=4098&bytes=131&data='+data
+	action_zone.location='comm_write.cgi?port=0&baud=4098&bytes=133&data='+data
 }; 
   
 </script>
