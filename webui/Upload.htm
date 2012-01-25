@@ -1,14 +1,12 @@
-<html>
+<html lang="en" class="no-js">
 <head>
+<meta charset="utf-8">
 <title>jQuery File Upload Demo</title>
 <script type="text/javascript" src="jquery.js"></script>  
 </head>
 <body>
 <iframe name="action_zone" style="display:none"></iframe>
 <textarea disabled id="avr_log" rows="6" cols="23" style = "font-size: 10px" ></textarea>
-
-Timeout ms: <textarea id="timeout"  cols="6" style = "font-size: 10px">5000</textarea>
-Attempts: <textarea id="max_attempts"  cols="6" style = "font-size: 10px" >5</textarea>
 
 <input type="submit" value="Update firmware" onClick="updateFirmware()" id="click">
 
@@ -75,12 +73,9 @@ Attempts: <textarea id="max_attempts"  cols="6" style = "font-size: 10px" >5</te
 	
 	var timerMulti;	//Timer which sends the packets periodically
 	
-	
-	var sending_timeout = document.getElementById('timeout').value;//Time out in milliseconds for the timer	
-	var max_attempts = document.getElementById('max_attempts').value; //Maximum attempts for sending
-	
+	const SENDING_TIMEOUT = 5000; //Time out in milliseconds for the timer	
 	const PACKET_LENGTH = 128; //Length of the packet						
-	
+	const MAX_ATTEMPTS = 5; //Maximum attempts for sending
 	
 	
   
@@ -110,7 +105,7 @@ function updateFirmware () {
 	//Check the content of "console" file
 	//If "0" - can update, not "0" - AVR is not ready!
 	if ( parseInt( avr_log_console ) == 0 ) {
-		timerMulti = window.setInterval( "sendPacket();", sending_timeout );    
+		timerMulti = window.setInterval( "sendPacket();", SENDING_TIMEOUT );    
 	}
 	else {
 		alert( "AVR is not ready to be updated" );
@@ -123,9 +118,9 @@ function sendPacket() {
 	
 	
 	var packet4Sending;		//Packet for sending, consist of start indicator "$"
-							//Count number of packet, length of packet, 2 CRC bytes, bytes * PACKET_LENGTH
+							//Count number of packet, length of packet, bytes * PACKET_LENGTH
 	
-	if (attempts != max_attempts) {
+	if (attempts != MAX_ATTEMPTS) {
 		if (parseInt(avr_log_console) == packets) {
 			//Last packet was succesfully sent
 			alert("Firware succesfully updated");
@@ -208,7 +203,6 @@ function sendPacket() {
 		//No success
 		alert("Maximum attempts!");
 		window.clearTimeout(timerMulti);
-		attempts = 0;
 	}
 };
 
@@ -224,9 +218,33 @@ function complementToRequiredDigits (data, digits) {
 	}
 };
 
+	/*
+	if (crc.toString(16).length == 1) {
+		tempString = "000" + crc.toString(16)    
+	}
+	else if (crc.toString(16).length == 2) {
+		tempString = "00" + crc.toString(16)
+	}			  
+	else if (crc.toString(16).length == 3) {
+		tempString = "0" + crc.toString(16)
+	}
+	else {
+		tempString = crc.toString(16);
+	}
+	//Complement up to 2 digits packetNumber and bytesToBeSent 
+	var stringPacketNumber = packetNumber.toString(16);
+	if (stringPacketNumber.length == 1) {
+		stringPacketNumber = "0" + stringPacketNumber;
+	}
+	var stringBytesToBeSent = bytesToBeSent.toString(16);
+	if (stringBytesToBeSent.length == 1) {
+		stringBytesToBeSent = "0" + stringBytesToBeSent;
+	}
+};
+ */
 function comm_write(data)	{
 	//Write data to AVR com port
-	action_zone.location='comm_write.cgi?port=0&baud=4098&bytes=133&data='+data
+	action_zone.location='comm_write.cgi?port=0&baud=4098&bytes=131&data='+data
 }; 
   
 </script>
