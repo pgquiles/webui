@@ -7,7 +7,8 @@
 <body>
 <iframe name="action_zone" style="display:none"></iframe>
 <textarea disabled id="avr_log" rows="6" cols="23" style = "font-size: 10px" ></textarea>
-
+Timeout:
+<textarea  id="timeout" rows="1" cols="6" style = "font-size: 10px" ></textarea>
 <input type="submit" value="Update firmware" onClick="updateFirmware()" id="click">
 
 
@@ -73,7 +74,7 @@
 	
 	var timerMulti;	//Timer which sends the packets periodically
 	
-	const SENDING_TIMEOUT = 5000; //Time out in milliseconds for the timer	
+	//const SENDING_TIMEOUT = 2000; //Time out in milliseconds for the timer	
 	const PACKET_LENGTH = 128; //Length of the packet						
 	const MAX_ATTEMPTS = 5; //Maximum attempts for sending
 	
@@ -100,12 +101,14 @@ function updateFirmware () {
 	//action_zone.location='comm_write.cgi?port=0&baud=4098&bytes=2&data=$U'
 	
 	//Attempt to read Firmware file
+	attempts = 0;
 	readFirmwareFile();
 	//Do AVR ready to get firmware data?
 	//Check the content of "console" file
 	//If "0" - can update, not "0" - AVR is not ready!
+	
 	if ( parseInt( avr_log_console ) == 0 ) {
-		timerMulti = window.setInterval( "sendPacket();", SENDING_TIMEOUT );    
+		timerMulti = window.setInterval( "sendPacket();", document.getElementById('timeout').value);    
 	}
 	else {
 		alert( "AVR is not ready to be updated" );
@@ -173,7 +176,7 @@ function sendPacket() {
 				//Compile the whole packet to be sent
 				packet4Sending = 	"%24%" + hexPacketNumber + "%" + hexBytesToBeSent + "%" + hexCRC[0] + hexCRC[1] + "%" + hexCRC[2] + hexCRC[3] + newString;  
 				
-				alert(packet4Sending);
+				//alert(packet4Sending);
 				//document.getElementById('byte_content').textContent = packet4Sending;
 				
 				//Send packet
